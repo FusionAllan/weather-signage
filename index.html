@@ -2,56 +2,62 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Elcho Weather + Clock + Branding</title>
+  <title>Paper People Weather & Clock</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: #ffffff;
-      overflow: hidden;
+      background: #f5f5f5;
       font-family: 'Arial Black', sans-serif;
+      color: #005BAA;
+      overflow: hidden;
     }
 
     .container {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: start;
       height: 100vh;
       width: 100vw;
+      align-items: center;
     }
 
     .logo {
       margin-top: 0.5em;
-      margin-bottom: 0.2em;
     }
 
     .logo img {
-      max-height: 90px;
+      max-height: 80px;
       width: auto;
     }
 
     .clock {
-      font-size: 4.5em;
-      margin: 0.1em 0 0;
-      color: #000000;
+      font-size: 4em;
+      margin: 0.2em 0 0;
+      color: #005BAA;
     }
 
     .day {
-      font-size: 2.2em;
-      margin: 0.1em 0 0.4em;
-      color: #333333;
+      font-size: 2em;
+      margin: 0.1em 0 0.5em;
+      color: #4CAF50;
+    }
+
+    .weather-wrapper {
+      flex-grow: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 0 1em 1em;
     }
 
     .weather-container {
-      flex-grow: 1;
+      flex: 1;
+      max-width: 1920px;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      transform: scale(1.5);
-      transform-origin: top center;
     }
 
     .weatherwidget-io {
@@ -63,41 +69,43 @@
 </head>
 <body>
   <div class="container">
-    <!-- 🔷 Company Logo -->
+    <!-- Logo -->
     <div class="logo">
-      <img src="PPL%20LOGO.png" alt="The Paper People Logo">
+      <img src="paper-people-logo.png" alt="The Paper People Logo">
     </div>
 
-    <!-- ⏰ Clock & Day -->
+    <!-- Clock & Day -->
     <div class="clock" id="clock">Loading...</div>
     <div class="day" id="day">...</div>
 
-    <!-- 🌤️ Weather Widget -->
-    <div class="weather-container">
-      <a class="weatherwidget-io"
-         href="https://forecast7.com/en/45d42n89d15/54428/?unit=us"
-         data-label_1="ELCHO"
-         data-label_2="WEATHER"
-         data-font="Arial Black"
-         data-icons="Climacons Animated"
-         data-days="5"
-         data-theme="gray"
-         data-basecolor="#ffffff"
-         data-shadow="#dcdcdc"
-         data-accent="rgba(240, 247, 236, 0.13)"
-         data-textcolor="#000000"
-         data-highcolor="#fa5c2c"
-         data-cloudcolor="#aaaaaa"
-         data-cloudfill="#afb9dd"
-         data-raincolor="#0071be"
-         data-snowcolor="#a4a4a4">
-         ELCHO WEATHER
-      </a>
+    <!-- Weather Widget -->
+    <div class="weather-wrapper">
+      <div class="weather-container">
+        <a class="weatherwidget-io"
+           href="https://forecast7.com/en/45d42n89d15/54428/?unit=us"
+           data-label_1="ELCHO"
+           data-label_2="WEATHER"
+           data-font="Arial Black"
+           data-icons="Climacons Animated"
+           data-days="5"
+           data-theme="gray"
+           data-basecolor="#f5f5f5"
+           data-shadow="#dcdcdc"
+           data-accent="#4CAF50"
+           data-textcolor="#005BAA"
+           data-highcolor="#fa5c2c"
+           data-cloudcolor="#999999"
+           data-cloudfill="#afb9dd"
+           data-raincolor="#0071be"
+           data-snowcolor="#a4a4a4">
+           ELCHO WEATHER
+        </a>
+      </div>
     </div>
   </div>
 
   <script>
-    // 🕒 Live Clock + Day
+    // Clock + Day
     function updateClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -106,14 +114,17 @@
       const ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
       hours = hours ? hours : 12;
+
       document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+
       const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       document.getElementById('day').textContent = days[now.getDay()];
     }
+
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 🌦️ Weather Widget Script
+    // Weather widget loader
     !function(d,s,id){
       var js,fjs=d.getElementsByTagName(s)[0];
       if(!d.getElementById(id)){
@@ -124,7 +135,7 @@
       }
     }(document,'script','weatherwidget-io-js');
 
-    // 🔁 Auto-refresh every 30 minutes
+    // Auto-refresh every 30 min
     setTimeout(function () {
       location.reload();
     }, 30 * 60 * 1000);
