@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Elcho Weather + Clock</title>
+  <title>Elcho Weather + Clock + Branding</title>
   <style>
     html, body {
       margin: 0;
@@ -22,26 +22,36 @@
       width: 100vw;
     }
 
+    .logo {
+      margin-top: 0.5em;
+      margin-bottom: 0.2em;
+    }
+
+    .logo img {
+      max-height: 90px;
+      width: auto;
+    }
+
     .clock {
-      font-size: 5em;
+      font-size: 4.5em;
       margin: 0.1em 0 0;
       color: #000000;
     }
 
     .day {
-      font-size: 2.5em;
-      margin: 0.1em 0 0.3em;
+      font-size: 2.2em;
+      margin: 0.1em 0 0.4em;
       color: #333333;
     }
 
     .weather-container {
-      transform: scale(1.8);
-      transform-origin: top center;
+      flex-grow: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100%;
       width: 100%;
+      transform: scale(1.5);
+      transform-origin: top center;
     }
 
     .weatherwidget-io {
@@ -53,9 +63,16 @@
 </head>
 <body>
   <div class="container">
+    <!-- 🔷 Company Logo -->
+    <div class="logo">
+      <img src="PPL%20LOGO.png" alt="The Paper People Logo">
+    </div>
+
+    <!-- ⏰ Clock & Day -->
     <div class="clock" id="clock">Loading...</div>
     <div class="day" id="day">...</div>
 
+    <!-- 🌤️ Weather Widget -->
     <div class="weather-container">
       <a class="weatherwidget-io"
          href="https://forecast7.com/en/45d42n89d15/54428/?unit=us"
@@ -80,6 +97,7 @@
   </div>
 
   <script>
+    // 🕒 Live Clock + Day
     function updateClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -87,18 +105,15 @@
       const seconds = String(now.getSeconds()).padStart(2, '0');
       const ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
-      hours = hours ? hours : 12; // 0 → 12
-
-      document.getElementById('clock').textContent =
-        `${hours}:${minutes}:${seconds} ${ampm}`;
-
+      hours = hours ? hours : 12;
+      document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
       const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       document.getElementById('day').textContent = days[now.getDay()];
     }
-
     setInterval(updateClock, 1000);
     updateClock();
 
+    // 🌦️ Weather Widget Script
     !function(d,s,id){
       var js,fjs=d.getElementsByTagName(s)[0];
       if(!d.getElementById(id)){
@@ -108,6 +123,11 @@
         fjs.parentNode.insertBefore(js,fjs);
       }
     }(document,'script','weatherwidget-io-js');
+
+    // 🔁 Auto-refresh every 30 minutes
+    setTimeout(function () {
+      location.reload();
+    }, 30 * 60 * 1000);
   </script>
 </body>
 </html>
