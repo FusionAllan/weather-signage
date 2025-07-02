@@ -2,21 +2,48 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Elcho Weather</title>
+  <title>Elcho Weather + Clock</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       background: #ffffff;
+      overflow: hidden;
+      font-family: 'Arial Black', sans-serif;
     }
-    .weather-container {
-      width: 100vw;
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
       height: 100vh;
+      width: 100vw;
+    }
+
+    .clock {
+      font-size: 5em;
+      margin: 0.1em 0 0;
+      color: #000000;
+    }
+
+    .day {
+      font-size: 2.5em;
+      margin: 0.1em 0 0.3em;
+      color: #333333;
+    }
+
+    .weather-container {
+      transform: scale(1.8);
+      transform-origin: top center;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100%;
+      width: 100%;
     }
+
     .weatherwidget-io {
       width: 100%;
       height: 100%;
@@ -25,29 +52,53 @@
   </style>
 </head>
 <body>
-  <div class="weather-container">
-    <a class="weatherwidget-io"
-       href="https://forecast7.com/en/45d42n89d15/54428/?unit=us"
-       data-label_1="ELCHO"
-       data-label_2="WEATHER"
-       data-font="Arial Black"
-       data-icons="Climacons Animated"
-       data-days="5"
-       data-theme="gray"
-       data-basecolor="#ffffff"
-       data-shadow="#dcdcdc"
-       data-accent="rgba(240, 247, 236, 0.13)"
-       data-textcolor="#000000"
-       data-highcolor="#fa5c2c"
-       data-cloudcolor="#aaaaaa"
-       data-cloudfill="#afb9dd"
-       data-raincolor="#0071be"
-       data-snowcolor="#a4a4a4">
-       ELCHO WEATHER
-    </a>
+  <div class="container">
+    <div class="clock" id="clock">Loading...</div>
+    <div class="day" id="day">...</div>
+
+    <div class="weather-container">
+      <a class="weatherwidget-io"
+         href="https://forecast7.com/en/45d42n89d15/54428/?unit=us"
+         data-label_1="ELCHO"
+         data-label_2="WEATHER"
+         data-font="Arial Black"
+         data-icons="Climacons Animated"
+         data-days="5"
+         data-theme="gray"
+         data-basecolor="#ffffff"
+         data-shadow="#dcdcdc"
+         data-accent="rgba(240, 247, 236, 0.13)"
+         data-textcolor="#000000"
+         data-highcolor="#fa5c2c"
+         data-cloudcolor="#aaaaaa"
+         data-cloudfill="#afb9dd"
+         data-raincolor="#0071be"
+         data-snowcolor="#a4a4a4">
+         ELCHO WEATHER
+      </a>
+    </div>
   </div>
 
   <script>
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // 0 → 12
+
+      document.getElementById('clock').textContent =
+        `${hours}:${minutes}:${seconds} ${ampm}`;
+
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      document.getElementById('day').textContent = days[now.getDay()];
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
     !function(d,s,id){
       var js,fjs=d.getElementsByTagName(s)[0];
       if(!d.getElementById(id)){
