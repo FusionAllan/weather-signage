@@ -8,7 +8,7 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background: #f5f5f5;
+      background: #1e1e1e;
       font-family: 'Arial Black', sans-serif;
       color: #005BAA;
       overflow: hidden;
@@ -41,6 +41,12 @@
       font-size: 4em;
       margin: 0.1em 0 0.5em;
       color: #4CAF50;
+    }
+
+    .date {
+      font-size: 1.8em;
+      color: #cccccc;
+      margin: 0.2em 0 0.5em;
     }
 
     .weather-wrapper {
@@ -77,6 +83,7 @@
     <!-- Clock & Day -->
     <div class="clock" id="clock">Loading...</div>
     <div class="day" id="day">...</div>
+    <div class="date" id="date">...</div>
 
     <!-- Weather Widget -->
     <div class="weather-wrapper">
@@ -97,20 +104,30 @@
 
   <script>
     // Clock & Day Display
-    function updateClock() {
-      const now = new Date();
-      let hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
+function updateClock() {
+  const now = new Date();
 
-      document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+  // Clock (12 hour)
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
 
-      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      document.getElementById('day').textContent = days[now.getDay()];
-    }
+  // Day
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('day').textContent = days[now.getDay()];
+
+  // Date
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const month = months[now.getMonth()];
+  const day = now.getDate();
+  const year = now.getFullYear();
+  document.getElementById('date').textContent = `${month} ${day}, ${year}`;
+}
+
 
     setInterval(updateClock, 1000);
     updateClock();
