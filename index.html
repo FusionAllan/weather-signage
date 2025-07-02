@@ -32,13 +32,13 @@
     }
 
     .clock {
-      font-size: 4em;
+      font-size: 7em;
       margin: 0.2em 0 0;
       color: #005BAA;
     }
 
     .day {
-      font-size: 2em;
+      font-size: 4em;
       margin: 0.1em 0 0.5em;
       color: #4CAF50;
     }
@@ -88,16 +88,7 @@
            data-font="Arial Black"
            data-icons="Climacons Animated"
            data-days="5"
-           data-theme="gray"
-           data-basecolor="#f5f5f5"
-           data-shadow="#dcdcdc"
-           data-accent="#4CAF50"
-           data-textcolor="#005BAA"
-           data-highcolor="#fa5c2c"
-           data-cloudcolor="#999999"
-           data-cloudfill="#afb9dd"
-           data-raincolor="#0071be"
-           data-snowcolor="#a4a4a4">
+           data-theme="weather_one">
            ELCHO WEATHER
         </a>
       </div>
@@ -105,7 +96,7 @@
   </div>
 
   <script>
-    // Clock + Day
+    // Clock & Day Display
     function updateClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -124,7 +115,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Weather widget loader
+    // Weather Widget Script
     !function(d,s,id){
       var js,fjs=d.getElementsByTagName(s)[0];
       if(!d.getElementById(id)){
@@ -135,7 +126,7 @@
       }
     }(document,'script','weatherwidget-io-js');
 
-    // Auto-refresh every 30 min
+    // Auto-refresh every 30 minutes
     setTimeout(function () {
       location.reload();
     }, 30 * 60 * 1000);
