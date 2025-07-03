@@ -1,152 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Paper People Weather & Clock</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #1e1e1e;
-      font-family: 'Arial Black', sans-serif;
-      color: #005BAA;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<title>Paper People – Weather, Clock & Date</title>
+<style>
+  :root{
+    --brand-blue:#005BAA;
+    --brand-green:#4CAF50;
+    --bg-dark:#121212;
+    --text-light:#f5f5f5;
+  }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      width: 100vw;
-      align-items: center;
-    }
+  html,body{
+    margin:0;padding:0;height:100%;width:100%;
+    background:var(--bg-dark);color:var(--text-light);
+    font-family:'Arial Black',sans-serif;overflow:hidden;
+  }
+  .container{
+    display:flex;flex-direction:column;align-items:center;height:100%;width:100%;
+  }
+  .logo img{max-height:80px;margin:0.6em 0;}
+  .clock{font-size:4em;color:var(--brand-blue);margin:0.1em 0;}
+  .day{font-size:2em;color:var(--brand-green);margin:0 0 0.2em;}
+  .date{font-size:1.8em;color:#ccc;margin-bottom:0.6em;}
 
-    .logo {
-      margin-top: 2em;
-    }
-
-    .logo img {
-      max-height: 250px;
-      width: auto;
-    }
-
-    .clock {
-      font-size: 8em;
-      margin: 0.2em 0 0;
-      color: #005BAA;
-    }
-
-    .day {
-      font-size: 5em;
-      margin: 0.1em 0 0.5em;
-      color: #4CAF50;
-    }
-
-    .date {
-      font-size: 5em;
-      color: #cccccc;
-      margin: 0.2em 0 0.5em;
-    }
-
-    .weather-wrapper {
-      flex-grow: 1;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      padding: 0 1em 1em;
-    }
-
-    .weather-container {
-      flex: 2;
-      max-width: 1920px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .weatherwidget-io {
-      width: 100%;
-      height: 300%;
-      border: none;
-    }
-  </style>
+  /* Weather layout */
+  .weather{
+    flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    width:100%;max-width:1920px;padding:0 1em 1em;box-sizing:border-box;
+  }
+  .current{
+    display:flex;flex-direction:row;align-items:center;gap:0.8em;margin-bottom:0.6em;
+  }
+  .current img{height:100px;width:100px}
+  .current-temp{font-size:4em;}
+  .current-desc{font-size:1.4em;text-transform:capitalize}
+  .forecast{
+    display:flex;justify-content:center;gap:1.5em;flex-wrap:wrap;
+  }
+  .daycard{
+    background:#1e1e1e;border-radius:8px;padding:0.6em 1em;text-align:center;
+    min-width:110px;
+  }
+  .daycard img{height:45px;width:45px}
+  .daycard .label{font-size:1.2em;margin-top:0.4em}
+  .daycard .temp{font-size:1.1em;margin-top:0.3em}
+</style>
 </head>
 <body>
   <div class="container">
-    <!-- Logo -->
-    <div class="logo">
-      <img src="paper-people-logo.png" alt="The Paper People Logo">
-    </div>
+    <div class="logo"><img src="paper-people-logo.png" alt="The Paper People logo"></div>
 
-    <!-- Clock & Day -->
-    <div class="clock" id="clock">Loading...</div>
-    <div class="day" id="day">...</div>
-    <div class="date" id="date">...</div>
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="day" id="day">Loading…</div>
+    <div class="date" id="date"></div>
 
-    <!-- Weather Widget -->
-    <div class="weather-wrapper">
-      <div class="weather-container">
-        <a class="weatherwidget-io"
-           href="https://forecast7.com/en/45d42n89d15/54428/?unit=us"
-           data-label_1="ELCHO"
-           data-label_2="WEATHER"
-           data-font="Arial Black"
-           data-icons="Climacons Animated"
-           data-days="5"
-           data-theme="weather_one">
-           ELCHO WEATHER
-        </a>
-      </div>
+    <div class="weather" id="weather">
+      <!-- JS injects content here -->
     </div>
   </div>
 
-  <script>
-    // Clock & Day Display
-function updateClock() {
-  const now = new Date();
+<script>
+/* ---------- CLOCK, DAY, DATE ---------- */
+function updateClock(){
+  const now=new Date();
+  let h=now.getHours(),m=`${now.getMinutes()}`.padStart(2,'0'),s=`${now.getSeconds()}`.padStart(2,'0');
+  const ampm=h>=12?'PM':'AM';h=h%12||12;
+  document.getElementById('clock').textContent=`${h}:${m}:${s} ${ampm}`;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('day').textContent=days[now.getDay()];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('date').textContent=`${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+}
+setInterval(updateClock,1000);updateClock();
 
-  // Clock (12 hour)
-  let hours = now.getHours();
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-  document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+/* ---------- WEATHER ---------- */
+const API_KEY='d248158974fe1979c3a22a354fbd204f';
+const LAT=45.43, LON=-89.15;          // Elcho, WI
+const UNITS='imperial';               // 'imperial' = °F
+const URL=`https://api.openweathermap.org/data/2.5/onecall?lat=${LAT}&lon=${LON}&units=${UNITS}&exclude=minutely,hourly,alerts&appid=${API_KEY}`;
 
-  // Day
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  document.getElementById('day').textContent = days[now.getDay()];
-
-  // Date
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const month = months[now.getMonth()];
-  const day = now.getDate();
-  const year = now.getFullYear();
-  document.getElementById('date').textContent = `${month} ${day}, ${year}`;
+async function fetchWeather(){
+  try{
+    const res=await fetch(URL);
+    if(!res.ok) throw new Error(`API error: ${res.status}`);
+    const data=await res.json();
+    renderWeather(data);
+  }catch(e){
+    console.error(e);
+    document.getElementById('weather').innerHTML='<p style="color:red">Weather data unavailable</p>';
+  }
 }
 
+function iconUrl(icon){return `https://openweathermap.org/img/wn/${icon}@4x.png`;}
 
-    setInterval(updateClock, 1000);
-    updateClock();
+function renderWeather(data){
+  const container=document.getElementById('weather');
+  if(!data?.current?.weather){
+    container.innerHTML='<p style="color:red">Weather data unavailable</p>';
+    console.error('Invalid data structure:',data);
+    return;
+  }
 
-    // Weather Widget Script
-    !function(d,s,id){
-      var js,fjs=d.getElementsByTagName(s)[0];
-      if(!d.getElementById(id)){
-        js=d.createElement(s);
-        js.id=id;
-        js.src='https://weatherwidget.io/js/widget.min.js';
-        fjs.parentNode.insertBefore(js,fjs);
-      }
-    }(document,'script','weatherwidget-io-js');
+  const w=data.current;
 
-    // Auto-refresh every 30 minutes
-    setTimeout(function () {
-      location.reload();
-    }, 30 * 60 * 1000);
-  </script>
+  /* ---- Current ---- */
+  const curHTML=`
+    <div class="current">
+      <img src="${iconUrl(w.weather[0].icon)}" alt="">
+      <div>
+        <div class="current-temp">${Math.round(w.temp)}°</div>
+        <div class="current-desc">${w.weather[0].description}</div>
+      </div>
+    </div>`;
+
+  /* ---- Forecast (next 4 days) ---- */
+  const days=(data.daily||[]).slice(1,5).map(d=>{
+    const date=new Date(d.dt*1000);
+    const label=date.toLocaleDateString('en-US',{weekday:'short'});
+    return `
+      <div class="daycard">
+        <div>${label}</div>
+        <img src="${iconUrl(d.weather[0].icon)}" alt="">
+        <div class="temp">${Math.round(d.temp.max)}° / ${Math.round(d.temp.min)}°</div>
+        <div class="label">${d.weather[0].main}</div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML=curHTML+`<div class="forecast">${days}</div>`;
+}
+fetchWeather();
+/* refresh every 15 min */
+setInterval(fetchWeather,15*60*1000);
+
+/* ---------- PAGE AUTO-REFRESH (fallback) ---------- */
+setTimeout(()=>location.reload(),60*60*1000);  // full reload every 60 min
+</script>
 </body>
 </html>
