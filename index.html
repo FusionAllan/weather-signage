@@ -92,10 +92,7 @@
   </div>
 
 <script>
-const API_KEY = "d248158974fe1979c3a22a354fbd204f";
-const LAT = 45.43, LON = -89.15;
-const UNITS = "imperial";
-const EXCLUDE = "minutely,hourly";
+const PROXY_URL = "https://weather-signage.onrender.com"; // Replace with your actual Render URL
 
 function updateClock() {
   const now = new Date();
@@ -113,9 +110,8 @@ function updateClock() {
 setInterval(updateClock, 1000); updateClock();
 
 async function fetchWeather() {
-  const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${LAT}&lon=${LON}&units=${UNITS}&exclude=${EXCLUDE}&appid=${API_KEY}`;
   try {
-    const res = await fetch(url);
+    const res = await fetch(PROXY_URL);
     if (!res.ok) throw new Error("API response error");
     const data = await res.json();
     renderWeather(data);
@@ -152,7 +148,6 @@ function renderWeather(data) {
     const label = date.toLocaleDateString("en-US", { weekday: "short" });
     const pop = Math.round((day.pop || 0) * 100);
 
-    // Override icon for high POP with rain/snow as needed
     let icon = day.weather[0].icon;
     const main = day.weather[0].main.toLowerCase();
     if (pop >= 50) {
@@ -161,7 +156,7 @@ function renderWeather(data) {
       } else if (main.includes("rain") || main.includes("drizzle")) {
         icon = "10d";
       } else {
-        icon = "09d"; // generic rain icon
+        icon = "09d";
       }
     }
 
