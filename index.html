@@ -60,6 +60,12 @@
     display: flex; justify-content: center; gap: 1em; flex-wrap: wrap;
     padding-bottom: 1em;
   }
+  .updated-time {
+  text-align: center;
+  font-size: 1em;
+  color: #aaa;
+  margin-top: 0.6em;
+  }
   .daycard {
     background: #2a2a2a;
     border-radius: 8px;
@@ -104,6 +110,18 @@ updateClock();
 const apiBase = 'https://weather-signage.onrender.com/api';
 
 async function fetchWeather() {
+  const cacheKey = 'weatherData';
+  const cached = localStorage.getItem(cacheKey);
+  const now = Date.now();
+
+  if (cached) {
+    const { data, timestamp } = JSON.parse(cached);
+    if (now - timestamp < 1000 * 60 * 2) { // less than 2 minutes old
+      renderWeather(data);
+      return;
+    }
+  }
+
   try {
     const res = await fetch(`${apiBase}/weather`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -111,6 +129,7 @@ async function fetchWeather() {
     if (!data || typeof data !== 'object' || !data.current || !data.daily) {
       throw new Error("Unexpected or malformed weather data");
     }
+    localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
     renderWeather(data);
   } catch (err) {
     document.getElementById('weather').innerHTML = '<p>Weather data unavailable.</p>';
@@ -148,8 +167,23 @@ function renderWeather(data) {
       </div>
     `;
   });
-  html += '</div>';
+
+  html += `
+    </div>
+    <div class="updated-time" id="updated-time"></div>
+  `;
+
   container.innerHTML = html;
+
+  // Add the "Last updated" timestamp
+  const updatedAt = new Date();
+  const updatedTime = updatedAt.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+  document.getElementById('updated-time').textContent = `Last updated: ${updatedTime}`;
 }
 
 fetchWeather();
