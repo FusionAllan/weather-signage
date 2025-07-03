@@ -92,7 +92,7 @@
   </div>
 
 <script>
-const PROXY_URL = "https://weather-signage.onrender.com"; // Replace with your actual Render URL
+const PROXY_URL = "https://weather-signage.onrender.com/api/weather";
 
 function updateClock() {
   const now = new Date();
@@ -111,13 +111,15 @@ setInterval(updateClock, 1000); updateClock();
 
 async function fetchWeather() {
   try {
+    console.log("Fetching weather...");
     const res = await fetch(PROXY_URL);
-    if (!res.ok) throw new Error("API response error");
+    if (!res.ok) throw new Error(`API response error: ${res.status}`);
     const data = await res.json();
+    console.log("Weather data:", data);
     renderWeather(data);
     renderAlerts(data);
   } catch (e) {
-    console.error(e);
+    console.error("Failed to fetch weather data:", e);
     document.getElementById("weather").innerHTML = "<p style='color:red'>Weather data unavailable</p>";
   }
 }
