@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Paper People Weather</title>
+<title>Paper People Weather Display</title>
 <style>
   :root {
     --brand-blue: #005BAA;
@@ -19,10 +19,10 @@
     display: flex; flex-direction: column; align-items: center;
     height: 100%; width: 100%;
   }
-  .logo img { max-height: 250px; margin: 0.6em 0; }
-  .clock { font-size: 8em; color: var(--brand-blue); margin: 0.1em 0; }
-  .day { font-size: 7em; color: var(--brand-green); margin: 0 0 0.2em; }
-  .date { font-size: 5em; color: #ccc; margin-bottom: 0.6em; }
+  .logo img { max-height: 80px; margin: 0.6em 0; }
+  .clock { font-size: 4em; color: var(--brand-blue); margin: 0.1em 0; }
+  .day { font-size: 2em; color: var(--brand-green); margin: 0 0 0.2em; }
+  .date { font-size: 1.8em; color: #ccc; margin-bottom: 0.6em; }
 
   .weather {
     flex: 1;
@@ -54,6 +54,30 @@
   .daycard img { height: 45px; width: 45px; }
   .daycard .label { font-size: 1.2em; margin-top: 0.4em; }
   .daycard .temp { font-size: 1.1em; margin-top: 0.3em; }
+  .daycard .pop { font-size: 1em; margin-top: 0.3em; color: #9cf; }
+
+  .alerts {
+    background: #ff0000;
+    color: white;
+    padding: 0.5em 1em;
+    margin: 1em auto;
+    border-radius: 6px;
+    font-size: 1.2em;
+    max-width: 80%;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+  }
+  .alerts span {
+    display: inline-block;
+    position: absolute;
+    animation: scroll-left 20s linear infinite;
+  }
+  @keyframes scroll-left {
+    0% { left: 100%; }
+    100% { left: -100%; }
+  }
 </style>
 </head>
 <body>
@@ -63,13 +87,15 @@
     <div class="day" id="day">Loading…</div>
     <div class="date" id="date">---</div>
     <div class="weather" id="weather"></div>
+    <div class="alerts" id="alerts"><span>No active alerts.</span></div>
+    <audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
   </div>
 
 <script>
 const API_KEY = "d248158974fe1979c3a22a354fbd204f";
-const ZIP = "54428";
-const COUNTRY = "US";
-const UNITS = "imperial"; // use 'metric' for °C
+const LAT = 45.43, LON = -89.15;
+const UNITS = "imperial";
+const EXCLUDE = "minutely,hourly";
 
 function updateClock() {
   const now = new Date();
@@ -81,66 +107,92 @@ function updateClock() {
   document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const nowDay = days[now.getDay()];
-  const nowDate = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
-  document.getElementById('day').textContent = nowDay;
-  document.getElementById('date').textContent = nowDate;
+  document.getElementById('day').textContent = days[now.getDay()];
+  document.getElementById('date').textContent = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
 }
 setInterval(updateClock, 1000); updateClock();
 
 async function fetchWeather() {
+  const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${LAT}&lon=${LON}&units=${UNITS}&exclude=${EXCLUDE}&appid=${API_KEY}`;
   try {
-    const [currentRes, forecastRes] = await Promise.all([
-      fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${ZIP},${COUNTRY}&appid=${API_KEY}&units=${UNITS}`),
-      fetch(`https://api.openweathermap.org/data/2.5/forecast?zip=${ZIP},${COUNTRY}&appid=${API_KEY}&units=${UNITS}`)
-    ]);
-    if (!currentRes.ok || !forecastRes.ok) throw new Error("Weather fetch failed");
-    const current = await currentRes.json();
-    const forecast = await forecastRes.json();
-    renderWeather(current, forecast);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("API response error");
+    const data = await res.json();
+    renderWeather(data);
+    renderAlerts(data);
   } catch (e) {
     console.error(e);
     document.getElementById("weather").innerHTML = "<p style='color:red'>Weather data unavailable</p>";
   }
 }
 
-function iconUrl(icon) {
-  return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+function iconUrl(iconCode) {
+  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 }
 
-function renderWeather(current, forecast) {
+function renderWeather(data) {
   const container = document.getElementById("weather");
+  if (!data || !data.current || !data.daily) {
+    container.innerHTML = "<p style='color:red'>Weather data missing</p>";
+    return;
+  }
 
+  const current = data.current;
   const currentHTML = `
     <div class="current">
       <img src="${iconUrl(current.weather[0].icon)}" alt="">
       <div>
-        <div class="current-temp">${Math.round(current.main.temp)}°</div>
+        <div class="current-temp">${Math.round(current.temp)}°</div>
         <div class="current-desc">${current.weather[0].description}</div>
       </div>
     </div>`;
 
-  // Filter forecast entries to 12:00 PM each day
-  const daily = forecast.list.filter(f => f.dt_txt.includes("12:00:00")).slice(0, 5);
-
-  const forecastHTML = daily.map(f => {
-    const date = new Date(f.dt * 1000);
+  const forecastHTML = data.daily.slice(1, 6).map(day => {
+    const date = new Date(day.dt * 1000);
     const label = date.toLocaleDateString("en-US", { weekday: "short" });
+    const pop = Math.round((day.pop || 0) * 100);
+
+    // Override icon for high POP with rain/snow as needed
+    let icon = day.weather[0].icon;
+    const main = day.weather[0].main.toLowerCase();
+    if (pop >= 50) {
+      if (main.includes("snow")) {
+        icon = "13d";
+      } else if (main.includes("rain") || main.includes("drizzle")) {
+        icon = "10d";
+      } else {
+        icon = "09d"; // generic rain icon
+      }
+    }
+
     return `
       <div class="daycard">
         <div>${label}</div>
-        <img src="${iconUrl(f.weather[0].icon)}" alt="">
-        <div class="temp">${Math.round(f.main.temp_max)}° / ${Math.round(f.main.temp_min)}°</div>
-        <div class="label">${f.weather[0].main}</div>
+        <img src="${iconUrl(icon)}" alt="">
+        <div class="temp">${Math.round(day.temp.max)}° / ${Math.round(day.temp.min)}°</div>
+        <div class="pop">Precip: ${pop}%</div>
+        <div class="label">${day.weather[0].main}</div>
       </div>`;
   }).join("");
 
   container.innerHTML = currentHTML + `<div class="forecast">${forecastHTML}</div>`;
 }
 
+function renderAlerts(data) {
+  const alertsBox = document.getElementById("alerts");
+  const alertSound = document.getElementById("alertSound");
+  if (data.alerts && data.alerts.length > 0) {
+    const fullText = data.alerts.map(a => `${a.event}: ${a.description.split("\n")[0]}`).join(" • ");
+    alertsBox.innerHTML = `<span>${fullText}</span>`;
+    alertSound.play().catch(e => console.log("Alert sound error:", e));
+  } else {
+    alertsBox.innerHTML = "<span>No active alerts.</span>";
+  }
+}
+
 fetchWeather();
-setInterval(fetchWeather, 15 * 60 * 1000); // refresh every 15 min
-setTimeout(() => location.reload(), 60 * 60 * 1000); // full reload hourly
+setInterval(fetchWeather, 15 * 60 * 1000);
+setTimeout(() => location.reload(), 60 * 60 * 1000);
 </script>
 </body>
 </html>
