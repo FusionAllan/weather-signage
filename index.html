@@ -48,31 +48,6 @@
     border: none;
   }
 
-  .radar-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.radar-wrapper iframe {
-  width: 100%;
-  height: 480px;
-  border: none;
-}
-
-.radar-label {
-  position: absolute;
-  top: 50%; /* adjust to match marker */
-  left: 50%; /* adjust to match marker */
-  transform: translate(-50%, -130%); /* centers and offsets label above the pin */
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 5px;
-  font-size: 1em;
-  font-weight: bold;
-  pointer-events: none; /* ensures it doesn't block map interaction */
-}
   .current {
     display: flex; flex-direction: row; align-items: center; gap: 1em; margin-bottom: 1em;
     padding: 1em;
@@ -113,12 +88,10 @@
     <div class="weather-radar">
       <div class="weather" id="weather"></div>
       <div class="radar-container">
-        <div class="radar-wrapper"
         <iframe
-          src="https://embed.windy.com/embed2.html?lat=45.4297&lon=-89.1534&zoom=8&level=surface&overlay=radar&menu=&message=&marker=45.4297,-89.1534,1&calendar=now&pressure=&type=map&location=coordinates&detail=&detailLat=45.4297&detailLon=-89.1534&metricWind=default&metricTemp=default&radarRange=-1"
+          src="https://embed.windy.com/embed2.html?lat=45.4297&lon=-89.1534&zoom=8&level=surface&overlay=radar&menu=&message=&marker=45.4297,-89.1534&calendar=now&pressure=&type=map&location=coordinates&detail=&detailLat=45.4297&detailLon=-89.1534&metricWind=default&metricTemp=default&radarRange=-1"
           title="Live Radar with Map">
         </iframe>
-        <div class="radar-label">Elcho</div>  
       </div>
     </div>
 <script>
