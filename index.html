@@ -1,83 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Paper People Weather Display</title>
-<style>
-  :root {
-    --brand-blue: #005BAA;
-    --brand-green: #4CAF50;
-    --bg-dark: #121212;
-    --text-light: #f5f5f5;
-  }
-  html, body {
-    margin: 0; padding: 0; height: 100%; width: 100%;
-    background: var(--bg-dark); color: var(--text-light);
-    font-family: 'Arial Black', sans-serif; overflow: hidden;
-  }
-  .container {
-    display: flex; flex-direction: column; align-items: center;
-    height: 100%; width: 100%;
-    box-sizing: border-box;
-    padding-bottom: 3em;
-  }
-  .logo img { max-height: 80px; margin: 0.6em 0; }
-  .clock { font-size: 4em; color: var(--brand-blue); margin: 0.1em 0; }
-  .day { font-size: 2em; color: var(--brand-green); margin: 0 0 0.2em; }
-  .date { font-size: 1.8em; color: #ccc; margin-bottom: 0.6em; }
-
-  .weather-radar {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 2em;
-    width: 100%;
-    max-width: 1920px;
-    padding: 1em;
-    box-sizing: border-box;
-  }
-  .weather, .radar-container {
-    flex: 1;
-    background: #1e1e1e;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .radar-container iframe {
-    width: 100%;
-    height: 480px;
-    border: none;
-  }
-
-  .current {
-    display: flex; flex-direction: row; align-items: center; gap: 1em; margin-bottom: 1em;
-    padding: 1em;
-  }
-  .current img { height: 100px; width: 100px; }
-  .current-temp { font-size: 4em; }
-  .current-desc { font-size: 1.4em; text-transform: capitalize; }
-
-  .forecast {
-    display: flex; justify-content: center; gap: 1em; flex-wrap: wrap;
-    padding-bottom: 1em;
-  }
-  .updated-time {
-  text-align: center;
-  font-size: 1em;
-  color: #aaa;
-  margin-top: 0.6em;
-  }
-  .daycard {
-    background: #2a2a2a;
-    border-radius: 8px;
-    padding: 0.6em 1em;
-    text-align: center;
-    min-width: 125px;
-  }
-  .daycard img { height: 60px; width: 60px; }
-  .daycard .label { font-size: 2em; margin-top: 0.4em; }
-  .daycard .temp { font-size: 1.6em; margin-top: 0.3em; }
-  .daycard .pop { font-size: 1.2em; margin-top: 0.3em; color: #9cf; }
-</style>
+  <meta charset="UTF-8">
+  <title>Paper People Weather Display</title>
+  <style>
+    :root {
+      --brand-blue: #005BAA;
+      --brand-green: #4CAF50;
+      --bg-dark: #121212;
+      --text-light: #f5f5f5;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Arial Black', sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+      padding-bottom: 3em;
+    }
+    .logo img {
+      max-height: 80px;
+      margin: 0.6em 0;
+    }
+    .clock {
+      font-size: 4em;
+      color: var(--brand-blue);
+      margin: 0.1em 0;
+    }
+    .day {
+      font-size: 2em;
+      color: var(--brand-green);
+      margin: 0 0 0.2em;
+    }
+    .date {
+      font-size: 1.8em;
+      color: #ccc;
+      margin-bottom: 0.6em;
+    }
+    .weather-radar {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 2em;
+      width: 100%;
+      max-width: 1920px;
+      padding: 1em;
+      box-sizing: border-box;
+    }
+    .weather, .radar-container {
+      flex: 1;
+      background: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .radar-container iframe {
+      width: 100%;
+      height: 480px;
+      border: none;
+    }
+    .current {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1em;
+      margin-bottom: 1em;
+      padding: 1em;
+    }
+    .current img {
+      height: 100px;
+      width: 100px;
+    }
+    .current-temp {
+      font-size: 4em;
+    }
+    .current-desc {
+      font-size: 1.4em;
+      text-transform: capitalize;
+    }
+    .forecast {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      flex-wrap: wrap;
+      padding-bottom: 1em;
+    }
+    .daycard {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 0.6em 1em;
+      text-align: center;
+      min-width: 110px;
+    }
+    .daycard img {
+      height: 45px;
+      width: 45px;
+    }
+    .daycard .label {
+      font-size: 1.2em;
+      margin-top: 0.4em;
+    }
+    .daycard .temp {
+      font-size: 1.1em;
+      margin-top: 0.3em;
+    }
+    .daycard .pop {
+      font-size: 1em;
+      margin-top: 0.3em;
+      color: #9cf;
+    }
+    .updated {
+      text-align: center;
+      font-size: 0.9em;
+      color: #aaa;
+      margin-bottom: 1em;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -89,105 +137,84 @@
       <div class="weather" id="weather"></div>
       <div class="radar-container">
         <iframe
-          src="https://embed.windy.com/embed2.html?lat=45.4297&lon=-89.1534&zoom=8&level=surface&overlay=radar&menu=&message=&marker=45.4297,-89.1534&calendar=now&pressure=&type=map&location=coordinates&detail=&detailLat=45.4297&detailLon=-89.1534&metricWind=default&metricTemp=default&radarRange=-1"
-          title="Live Radar with Map">
+          src="https://www.rainviewer.com/map.html?loc=45.4297,-89.1534,8&overlay=1&layer=radar&sm=0&c=0&lm=1&marker=45.4297,-89.1534"
+          title="Live Radar - Elcho, WI">
         </iframe>
       </div>
     </div>
-<script>
-function updateClock() {
-  const now = new Date();
-  const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
-  const day = now.toLocaleDateString('en-US', { weekday: 'long' });
-  const date = now.toLocaleDateString('en-US');
-  document.getElementById('clock').textContent = time;
-  document.getElementById('day').textContent = day;
-  document.getElementById('date').textContent = date;
-}
-setInterval(updateClock, 1000);
-updateClock();
+    <div class="updated" id="updated">Last updated: --</div>
+  </div>
 
-const apiBase = 'https://weather-signage.onrender.com/api';
-
-async function fetchWeather() {
-  const cacheKey = 'weatherData';
-  const cached = localStorage.getItem(cacheKey);
-  const now = Date.now();
-
-  if (cached) {
-    const { data, timestamp } = JSON.parse(cached);
-    if (now - timestamp < 1000 * 60 * 2) { // less than 2 minutes old
-      renderWeather(data);
-      return;
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+      const day = now.toLocaleDateString('en-US', { weekday: 'long' });
+      const date = now.toLocaleDateString('en-US');
+      document.getElementById('clock').textContent = time;
+      document.getElementById('day').textContent = day;
+      document.getElementById('date').textContent = date;
     }
-  }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-  try {
-    const res = await fetch(`${apiBase}/weather`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!data || typeof data !== 'object' || !data.current || !data.daily) {
-      throw new Error("Unexpected or malformed weather data");
+    const apiBase = 'https://weather-signage.onrender.com/api';
+
+    async function fetchWeather() {
+      try {
+        const res = await fetch(`${apiBase}/weather`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!data || typeof data !== 'object' || !data.current || !data.daily) {
+          throw new Error("Unexpected or malformed weather data");
+        }
+        renderWeather(data);
+      } catch (err) {
+        document.getElementById('weather').innerHTML = '<p>Weather data unavailable.</p>';
+        console.error("Weather fetch error:", err);
+      }
     }
-    localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
-    renderWeather(data);
-  } catch (err) {
-    document.getElementById('weather').innerHTML = '<p>Weather data unavailable.</p>';
-    console.error("Weather fetch error:", err);
-  }
-}
 
-function renderWeather(data) {
-  const container = document.getElementById('weather');
-  const { current, daily } = data;
-  const iconUrl = `https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`;
+    function renderWeather(data) {
+      const container = document.getElementById('weather');
+      const { current, daily } = data;
+      const iconUrl = `https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`;
 
-  let html = `
-    <div class="current">
-      <img src="${iconUrl}" alt="">
-      <div>
-        <div class="current-temp">${Math.round(current.temp)}°F</div>
-        <div class="current-desc">${current.weather[0].description}</div>
-      </div>
-    </div>
-    <div class="forecast">
-  `;
-  daily.slice(1, 6).forEach(day => {
-    const date = new Date(day.dt * 1000);
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-    const icon = day.weather[0].icon;
-    const iconUrl = `https://openweathermap.org/img/wn/${icon}.png`;
-    const pop = Math.round(day.pop * 100);
-    html += `
-      <div class="daycard">
-        <div class="label">${dayName}</div>
-        <img src="${iconUrl}" alt="">
-        <div class="temp">${Math.round(day.temp.max)}° / ${Math.round(day.temp.min)}°</div>
-        <div class="pop">${pop}% rain</div>
-      </div>
-    `;
-  });
+      let html = `
+        <div class="current">
+          <img src="${iconUrl}" alt="">
+          <div>
+            <div class="current-temp">${Math.round(current.temp)}°F</div>
+            <div class="current-desc">${current.weather[0].description}</div>
+          </div>
+        </div>
+        <div class="forecast">
+      `;
+      daily.slice(1, 6).forEach(day => {
+        const date = new Date(day.dt * 1000);
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const icon = day.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${icon}.png`;
+        const pop = Math.round(day.pop * 100);
+        html += `
+          <div class="daycard">
+            <div class="label">${dayName}</div>
+            <img src="${iconUrl}" alt="">
+            <div class="temp">${Math.round(day.temp.max)}° / ${Math.round(day.temp.min)}°</div>
+            <div class="pop">${pop}% rain</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
 
-  html += `
-    </div>
-    <div class="updated-time" id="updated-time"></div>
-  `;
+      const updated = new Date();
+      document.getElementById('updated').textContent =
+        `Last updated: ${updated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+    }
 
-  container.innerHTML = html;
-
-  // Add the "Last updated" timestamp
-  const updatedAt = new Date();
-  const updatedTime = updatedAt.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  });
-  document.getElementById('updated-time').textContent = `Last updated: ${updatedTime}`;
-}
-
-fetchWeather();
-setInterval(fetchWeather, 1000 * 60 * 10);
-</script>
+    fetchWeather();
+    setInterval(fetchWeather, 1000 * 60 * 10);
+  </script>
 </body>
 </html>
